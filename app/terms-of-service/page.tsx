@@ -70,7 +70,7 @@ export default function TermsOfServicePage() {
         {
           heading: 'Contact',
           paragraphs: [
-            'For questions about these website terms, email info@risegentech.com or call +91 90323 63182.',
+            'For questions about these website terms, email info@risegentech.com or call +91 97054 69697.',
           ],
         },
       ]}

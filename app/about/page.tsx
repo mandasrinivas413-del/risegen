@@ -52,7 +52,7 @@ const glanceItems = [
 const aboutFaqs: Faq[] = [
   {
     q: 'Where is Rise Gen Technologies located?',
-    a: 'Rise Gen Technologies is located in Kukatpally, Hyderabad. You can call +91 90323 63182 or book a free demo to visit the classroom.',
+    a: 'Rise Gen Technologies is located in Kukatpally, Hyderabad. You can call +91 97054 69697 or book a free demo to visit the classroom.',
   },
   {
     q: 'Who can join the ServiceNow course?',
@@ -76,7 +76,7 @@ const aboutFaqs: Faq[] = [
   },
   {
     q: 'How can I attend a free demo class?',
-    a: 'Click Book Free Demo or message us on WhatsApp at +91 90323 63182, and we will share the next demo date.',
+    a: 'Click Book Free Demo or message us on WhatsApp at +91 97054 69697, and we will share the next demo date.',
   },
 ]
 
@@ -85,7 +85,7 @@ const organizationSchema = {
   '@type': 'EducationalOrganization',
   '@id': `${site.url}/#organization`,
   name: 'Rise Gen Technologies',
-  telephone: '+91 90323 63182',
+  telephone: '+91 97054 69697',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Kukatpally, Hyderabad',

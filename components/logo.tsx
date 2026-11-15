@@ -7,8 +7,8 @@ export function Logo({ tone = 'dark', className }: { tone?: 'dark' | 'light'; cl
     <Link
       href="/"
       className={cn(
-        'flex w-[190px] shrink-0 flex-col items-center rounded-md sm:w-[210px]',
-        tone === 'light' ? 'bg-white px-2 py-1' : '',
+        'flex w-[190px] shrink-0 flex-col items-center rounded-md pb-1 sm:w-[210px]',
+        tone === 'light' ? 'bg-white px-2 py-0' : 'py-0',
         className,
       )}
       aria-label="Rise Gen Technologies"
@@ -22,7 +22,7 @@ export function Logo({ tone = 'dark', className }: { tone?: 'dark' | 'light'; cl
           height={315}
           priority
           unoptimized
-          className="h-auto w-[47%] max-w-none object-contain"
+          className="h-auto w-[43%] max-w-none object-contain"
         />
         <Image
           src="/images/rise-gen-word.png"
@@ -31,12 +31,12 @@ export function Logo({ tone = 'dark', className }: { tone?: 'dark' | 'light'; cl
           height={100}
           priority
           unoptimized
-          className="mt-0.5 h-auto w-[112%] max-w-none object-contain"
+          className="mt-0 h-auto w-[112%] max-w-none object-contain"
         />
       </span>
       <span
         aria-hidden="true"
-        className="mt-0.5 flex w-full items-center justify-center gap-1 whitespace-nowrap text-[9px] font-semibold leading-[10px] tracking-[0.04em] text-[#102a3a] sm:text-[10px] sm:leading-3"
+        className="mt-0.5 mb-1 flex w-full items-center justify-center gap-1 whitespace-nowrap text-[9px] font-semibold leading-[10px] tracking-[0.04em] text-[#102a3a] sm:mb-1.5 sm:text-[10px] sm:leading-3"
       >
         <Image
           src="/images/rise-gen-caption-arrow-left.png"
@@ -47,7 +47,7 @@ export function Logo({ tone = 'dark', className }: { tone?: 'dark' | 'light'; cl
           unoptimized
           className="h-auto w-5 shrink-0 sm:w-6"
         />
-        TECHNOLOGY SOLUTIONS
+        TECHNOLOGIES
         <Image
           src="/images/rise-gen-caption-arrow-right.png"
           alt=""

@@ -77,7 +77,7 @@ export function PageHero({
           />
         </div>
       )}
-      <div className={cn('relative mx-auto max-w-7xl px-4 pt-16 md:px-6 md:pt-24', breadcrumbs ? 'pb-8 md:pb-10' : 'pb-14', contentClassName)}>
+      <div className={cn('relative mx-auto max-w-[1400px] px-5 pt-16 md:px-8 md:pt-24 lg:px-10', breadcrumbs ? 'pb-8 md:pb-10' : 'pb-14', contentClassName)}>
         <div className={cn('grid gap-12', aside && 'lg:grid-cols-12 lg:items-center')}>
           <div className={cn(aside && 'lg:col-span-7')}>
             <SectionEyebrow tone="dark">{eyebrow}</SectionEyebrow>

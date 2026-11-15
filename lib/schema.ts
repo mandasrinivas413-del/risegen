@@ -14,8 +14,10 @@ export function organizationSchema() {
     logo: absoluteUrl('/images/rise-gen-technologies.png'),
     address: {
       '@type': 'PostalAddress',
+      streetAddress: site.address.street,
       addressLocality: site.address.locality,
       addressRegion: site.address.region,
+      postalCode: site.address.postalCode,
       addressCountry: site.address.country,
     },
     areaServed: 'Hyderabad, Telangana, India',

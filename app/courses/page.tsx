@@ -43,7 +43,9 @@ export default function CoursesPage() {
                     href={coursePagePath(course.slug)}
                     className="text-foreground underline-offset-4 after:absolute after:inset-0 hover:text-primary hover:underline"
                   >
-                    {course.primaryKeyword} in Hyderabad
+                    {course.primaryKeyword.includes('Training')
+                      ? `${course.primaryKeyword} in Hyderabad`
+                      : `${course.primaryKeyword} Training in Hyderabad`}
                   </Link>
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{course.fullName}</p>

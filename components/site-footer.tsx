@@ -66,7 +66,7 @@ export function SiteFooter() {
               <li className="flex items-start gap-2">
                 <MapPin className="mt-1 size-3.5 shrink-0 text-blue-300" aria-hidden="true" />
                 <address className="not-italic">
-                  {site.address.locality}, {site.address.region}, India
+                  {site.address.street}, {site.address.locality}, {site.address.region} - {site.address.postalCode}, India
                 </address>
               </li>
             </ul>
@@ -169,7 +169,7 @@ export function SiteFooter() {
 function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="text-base font-semibold tracking-[0.08em] text-white">{title}</h2>
+      <h2 className="text-base font-semibold tracking-[0.02em] text-white">{title}</h2>
       <ul className="mt-3 flex flex-col gap-1 text-sm">{children}</ul>
     </div>
   )

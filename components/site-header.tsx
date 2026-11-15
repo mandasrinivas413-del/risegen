@@ -11,16 +11,16 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="bg-gradient-brand h-[3px]" aria-hidden="true" />
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:h-20 md:px-6">
+      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-1 px-5 sm:h-20 md:px-8 lg:px-10">
         <Logo />
 
         <nav aria-label="Main" className="hidden xl:block">
-          <ul className="flex items-center gap-1 rounded-xl border border-border bg-card/70 px-2 py-2 text-sm font-semibold xl:gap-2">
+          <ul className="flex items-center gap-0.5 rounded-xl border border-border bg-card/70 px-2 py-2 text-[13px] font-semibold xl:gap-1">
             <CourseMegaMenu href={coursesItem.href} label={coursesItem.label} />
             <li className="group relative">
               <Link
                 href="/servicenow-online-training"
-                className="flex items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-2 transition-colors hover:bg-muted hover:text-cyan-600 xl:px-3"
+                className="flex items-center gap-1 whitespace-nowrap rounded-lg px-2 py-2 transition-colors hover:bg-muted hover:text-cyan-600 xl:px-2.5"
                 aria-haspopup="true"
               >
                 Training Mode
@@ -41,7 +41,7 @@ export function SiteHeader() {
                 <li key={item.href} className="group relative">
                   <Link
                     href={item.href}
-                    className="flex items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-2 transition-colors hover:bg-muted hover:text-cyan-600 xl:px-3"
+                    className="flex items-center gap-1 whitespace-nowrap rounded-lg px-2 py-2 transition-colors hover:bg-muted hover:text-cyan-600 xl:px-2.5"
                     aria-haspopup="true"
                   >
                     {item.label}
@@ -60,7 +60,7 @@ export function SiteHeader() {
                   {item.label === 'About' ? (
                     <AboutNavLink />
                   ) : (
-                    <Link href={item.href} className="block whitespace-nowrap rounded-lg px-2.5 py-2 transition-colors hover:bg-muted hover:text-cyan-600 xl:px-3">
+                    <Link href={item.href} className="block whitespace-nowrap rounded-lg px-2 py-2 transition-colors hover:bg-muted hover:text-cyan-600 xl:px-2.5">
                       {item.label}
                     </Link>
                   )}
@@ -71,11 +71,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a href={site.phoneHref} className="hidden items-center gap-2 px-2 text-sm font-semibold transition-colors hover:text-cyan-600 xl:flex">
+          <a href={site.phoneHref} className="hidden items-center gap-1 whitespace-nowrap px-1 text-[12px] font-semibold transition-colors hover:text-cyan-600 xl:flex">
             <Phone className="size-4" aria-hidden="true" />
             {site.phone}
           </a>
-          <Link href="/contact" className="header-demo-shimmer relative hidden h-10 items-center justify-center overflow-hidden rounded-lg bg-gradient-brand px-4 text-sm font-semibold text-white shadow-lg shadow-brand/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:inline-flex">
+          <Link href="/contact" className="header-demo-shimmer relative hidden h-9 items-center justify-center overflow-hidden rounded-lg bg-gradient-brand px-3 text-[13px] font-semibold text-white shadow-lg shadow-brand/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:inline-flex">
             Book Free Demo
           </Link>
           <MobileMenu />

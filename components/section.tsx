@@ -31,7 +31,7 @@ export function Section({
         className,
       )}
     >
-      <div className="mx-auto max-w-7xl px-4 md:px-6">{children}</div>
+      <div className="mx-auto max-w-[1400px] px-5 md:px-8 lg:px-10">{children}</div>
     </section>
   )
 }

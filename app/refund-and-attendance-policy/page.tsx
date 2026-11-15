@@ -65,7 +65,7 @@ export default function RefundAndAttendancePolicyPage() {
         {
           heading: 'Confirming policy details',
           paragraphs: [
-            'For current attendance, fee or refund details, contact Rise Gen Technologies at info@risegentech.com or +91 90323 63182 before enrolling.',
+            'For current attendance, fee or refund details, contact Rise Gen Technologies at info@risegentech.com or +91 97054 69697 before enrolling.',
           ],
         },
       ]}

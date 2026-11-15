@@ -83,7 +83,7 @@ export default function ContactPage() {
                 <span>
                   <span className="block text-sm font-semibold text-muted-foreground">Classroom centre</span>
                   <span className="mt-1 block text-base font-bold">
-                    {site.address.street}, {site.address.locality}, {site.address.region}
+                    {site.address.street}, {site.address.locality}, {site.address.region} - {site.address.postalCode}
                   </span>
                   <span className="mt-1 block text-sm text-muted-foreground">{site.hours}</span>
                 </span>

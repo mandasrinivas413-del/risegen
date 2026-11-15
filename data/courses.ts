@@ -110,7 +110,28 @@ const todoCourse = (
   faqs: todoFaqs(shortName, fullName),
   relatedSlugs,
 })
-
+const genericCourseFaqs = (shortName: string, fullName: string): CourseFaq[] => [
+  {
+    q: `What does the ${fullName} course cover?`,
+    a: `The ${fullName} curriculum is built around practical ServiceNow workflows, platform configuration, and project-based learning. Learners work through core concepts, hands-on exercises, and review tasks that help connect theory to real implementation patterns.`,
+  },
+  {
+    q: `Who should join this course?`,
+    a: `This training is suitable for freshers, IT support professionals, administrators, and working professionals who want to build a structured understanding of ${shortName} and ServiceNow platform concepts. It is useful for anyone who wants project experience and practical exposure to daily platform workflows.`,
+  },
+  {
+    q: `Are there prerequisites?`,
+    a: `Most learners can start with the foundational modules without prior ServiceNow experience. A basic understanding of IT processes, business workflows, or digital tools is helpful, but it is not required for the beginner-friendly structure of the course.`,
+  },
+  {
+    q: `Which training modes are available?`,
+    a: `The course is designed for both online and classroom delivery. Availability, timings, and batch format may vary by intake, so learners should confirm the current schedule and delivery mode with Rise Gen Technologies before enrolling.`,
+  },
+  {
+    q: `Is certification preparation included?`,
+    a: `The program includes hands-on labs, practical review, and platform-oriented preparation relevant to ServiceNow learning goals. Certification support and exam guidance depend on the selected batch and the learner’s targets, so current details should be confirmed before enrollment.`,
+  },
+]
 const courseCardContent: Record<string, { subtitle: string; description: string; certification: string }> = {
   ITSM: {
     subtitle: 'IT Service Management',
@@ -296,8 +317,9 @@ export const courses: CoursePageData[] = [
     cardDescription: courseCardContent.CMDB.description,
     cardCertification: courseCardContent.CMDB.certification,
     certification: 'Certification scope to confirm',
-    primaryKeyword: 'ServiceNow CMDB',
+    primaryKeyword: 'ServiceNow CMDB Training',
     keywordVariants: [
+      'ServiceNow CMDB Training in Hyderabad',
       'ServiceNow Configuration Management Database',
       'CSDM ServiceNow',
       'ServiceNow CMDB implementation',
