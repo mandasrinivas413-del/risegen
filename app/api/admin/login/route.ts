@@ -1,8 +1,9 @@
+import type { RowDataPacket } from 'mysql2/promise'
+import { getDb } from '@/lib/db'
 import {
   clearAuthFailures,
   createAdminSession,
   getAdminEmail,
-  getSql,
   hashPassword,
   isAuthRateLimited,
   isSameOrigin,
@@ -27,30 +28,29 @@ export async function POST(request: Request) {
 
   const email = body.email.trim().toLowerCase()
   const adminEmail = getAdminEmail()
-  const sql = getSql()
-  let rows = await sql`
+  const [rows] = await getDb().execute<RowDataPacket[]>(`
     SELECT email, password_salt, password_hash, session_version, must_change_password
     FROM admin_users
-    WHERE email = ${adminEmail}
+    WHERE email = ?
     LIMIT 1
-  `
+  `, [adminEmail])
   let admin = rows[0]
 
   if (!admin && email === adminEmail && process.env.ADMIN_INITIAL_PASSWORD &&
       body.password === process.env.ADMIN_INITIAL_PASSWORD) {
     const { salt, hash } = await hashPassword(body.password)
-    await sql`
+    await getDb().execute(`
       INSERT INTO admin_users (email, password_salt, password_hash, must_change_password)
-      VALUES (${adminEmail}, ${salt}, ${hash}, TRUE)
-      ON CONFLICT (email) DO NOTHING
-    `
-    rows = await sql`
+      VALUES (?, ?, ?, TRUE)
+      ON DUPLICATE KEY UPDATE email = admin_users.email
+    `, [adminEmail, salt, hash])
+    const [updatedRows] = await getDb().execute<RowDataPacket[]>(`
       SELECT email, password_salt, password_hash, session_version, must_change_password
       FROM admin_users
-      WHERE email = ${adminEmail}
+      WHERE email = ?
       LIMIT 1
-    `
-    admin = rows[0]
+    `, [adminEmail])
+    admin = updatedRows[0]
   }
 
   const valid = email === adminEmail && admin &&

@@ -1,7 +1,8 @@
+import type { RowDataPacket } from 'mysql2/promise'
+import { getDb } from '@/lib/db'
 import {
   clearAuthFailures,
   getAdminEmail,
-  getSql,
   hashPassword,
   isAuthRateLimited,
   isSameOrigin,
@@ -39,21 +40,24 @@ export async function POST(request: Request) {
     return Response.json({ error: 'The reset details are invalid.' }, { status: 400 })
   }
 
-  const adminRows = await getSql()`SELECT email FROM admin_users WHERE email = ${email} LIMIT 1`
+  const [adminRows] = await getDb().execute<RowDataPacket[]>(
+    'SELECT email FROM admin_users WHERE email = ? LIMIT 1',
+    [email],
+  )
   if (!adminRows[0]) {
     await recordAuthFailure(request, 'password-reset')
     return Response.json({ error: 'The reset details are invalid.' }, { status: 400 })
   }
   const { salt, hash } = await hashPassword(body.newPassword)
-  await getSql()`
+  await getDb().execute(`
     UPDATE admin_users
-    SET password_salt = ${salt},
-        password_hash = ${hash},
+    SET password_salt = ?,
+        password_hash = ?,
         session_version = session_version + 1,
         must_change_password = FALSE,
         password_changed_at = NOW()
-    WHERE email = ${email}
-  `
+    WHERE email = ?
+  `, [salt, hash, email])
   await clearAuthFailures(request, 'password-reset')
   return Response.json({ saved: true })
 }

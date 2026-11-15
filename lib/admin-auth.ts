@@ -1,6 +1,7 @@
 import { createHash, createHmac, randomBytes, scrypt, timingSafeEqual } from 'node:crypto'
 import { promisify } from 'node:util'
-import { neon } from '@neondatabase/serverless'
+import type { RowDataPacket } from 'mysql2/promise'
+import { getDb } from '@/lib/db'
 
 const scryptAsync = promisify(scrypt)
 export const adminCookieName = 'nowpath_admin'
@@ -13,12 +14,6 @@ type AdminSession = {
   email: string
   expiresAt: number
   version: number
-}
-
-export function getSql() {
-  const databaseUrl = process.env.DATABASE_URL ?? process.env.POSTGRES_URL
-  if (!databaseUrl) throw new Error('DATABASE_URL or POSTGRES_URL is not configured')
-  return neon(databaseUrl)
 }
 
 export function getAdminEmail() {
@@ -107,12 +102,12 @@ export async function verifyAdminSession(token: string) {
   if (!session || session.expiresAt <= Math.floor(Date.now() / 1000)) return null
   if (session.email !== getAdminEmail()) return null
 
-  const rows = await getSql()`
+  const [rows] = await getDb().execute<RowDataPacket[]>(`
     SELECT email, session_version, must_change_password
     FROM admin_users
-    WHERE email = ${session.email}
+    WHERE email = ?
     LIMIT 1
-  `
+  `, [session.email])
   const admin = rows[0]
   if (!admin || admin.session_version !== session.version) return null
   return {
@@ -170,42 +165,29 @@ function authAttemptKey(request: Request, action: string) {
 
 export async function isAuthRateLimited(request: Request, action: string) {
   const key = authAttemptKey(request, action)
-  const rows = await getSql()`
+  const [rows] = await getDb().execute<RowDataPacket[]>(`
     SELECT locked_until > NOW() AS blocked
     FROM admin_auth_attempts
-    WHERE attempt_key = ${key}
+    WHERE attempt_key = ?
     LIMIT 1
-  `
-  return rows[0]?.blocked === true
+  `, [key])
+  return Boolean(rows[0]?.blocked)
 }
 
 export async function recordAuthFailure(request: Request, action: string) {
   const key = authAttemptKey(request, action)
-  await getSql()`
+  await getDb().execute(`
     INSERT INTO admin_auth_attempts (attempt_key, failures)
-    VALUES (${key}, 1)
-    ON CONFLICT (attempt_key) DO UPDATE SET
-      failures = CASE
-        WHEN admin_auth_attempts.locked_until IS NOT NULL
-          AND admin_auth_attempts.locked_until <= NOW() THEN 1
-        ELSE admin_auth_attempts.failures + 1
-      END,
-      locked_until = CASE
-        WHEN (
-          CASE
-            WHEN admin_auth_attempts.locked_until IS NOT NULL
-              AND admin_auth_attempts.locked_until <= NOW() THEN 1
-            ELSE admin_auth_attempts.failures + 1
-          END
-        ) >= ${loginFailureLimit} THEN NOW() + INTERVAL '15 minutes'
-        ELSE NULL
-      END
-  `
+    VALUES (?, 1)
+    ON DUPLICATE KEY UPDATE
+      failures = IF(locked_until IS NOT NULL AND locked_until <= NOW(), 1, failures + 1),
+      locked_until = IF(failures >= ?, DATE_ADD(NOW(), INTERVAL 15 MINUTE), NULL)
+  `, [key, loginFailureLimit])
 }
 
 export async function clearAuthFailures(request: Request, action: string) {
   const key = authAttemptKey(request, action)
-  await getSql()`DELETE FROM admin_auth_attempts WHERE attempt_key = ${key}`
+  await getDb().execute('DELETE FROM admin_auth_attempts WHERE attempt_key = ?', [key])
 }
 
 export function verifyRecoveryKey(input: string) {

@@ -1,4 +1,6 @@
-import { getSql, isSameOrigin, readSessionCookie, verifyAdminSession } from '@/lib/admin-auth'
+import type { ResultSetHeader } from 'mysql2/promise'
+import { getDb } from '@/lib/db'
+import { isSameOrigin, readSessionCookie, verifyAdminSession } from '@/lib/admin-auth'
 
 export const runtime = 'nodejs'
 
@@ -19,11 +21,10 @@ export async function DELETE(
     return Response.json({ error: 'Invalid enquiry ID.' }, { status: 400 })
   }
 
-  const deleted = await getSql()`
+  const [deleted] = await getDb().execute<ResultSetHeader>(`
     DELETE FROM enquiries
-    WHERE id = ${id}
-    RETURNING id
-  `
-  if (deleted.length === 0) return Response.json({ error: 'Enquiry not found.' }, { status: 404 })
+    WHERE id = ?
+  `, [id])
+  if (deleted.affectedRows === 0) return Response.json({ error: 'Enquiry not found.' }, { status: 404 })
   return Response.json({ deleted: true }, { headers: { 'Cache-Control': 'private, no-store' } })
 }

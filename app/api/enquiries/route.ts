@@ -1,4 +1,4 @@
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/db'
 import { courses } from '@/lib/courses'
 import { locations } from '@/lib/locations'
 import { validateEnquiryName, validateEnquiryPhone } from '@/lib/enquiry-validation'
@@ -52,22 +52,18 @@ async function saveEnquiry(enquiry: {
   message: string
   path: string
 }) {
-  const databaseUrl = process.env.DATABASE_URL ?? process.env.POSTGRES_URL
-  if (!databaseUrl) throw new Error('DATABASE_URL or POSTGRES_URL is not configured')
-
-  const sql = neon(databaseUrl)
-  await sql`
+  await getDb().execute(`
     INSERT INTO enquiries (name, subject, phone, course, mode, message, path)
-    VALUES (
-      ${enquiry.name},
-      ${enquiry.subject},
-      ${enquiry.phone},
-      ${enquiry.course},
-      ${enquiry.mode},
-      ${enquiry.message},
-      ${enquiry.path}
-    )
-  `
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `, [
+    enquiry.name,
+    enquiry.subject,
+    enquiry.phone,
+    enquiry.course,
+    enquiry.mode,
+    enquiry.message,
+    enquiry.path,
+  ])
 }
 
 export async function POST(request: Request) {
@@ -118,7 +114,7 @@ export async function POST(request: Request) {
       path: body.path,
     })
   } catch (error) {
-    console.error('Enquiry could not be saved to Neon Postgres:', error instanceof Error ? error.message : 'Unknown error')
+    console.error('Enquiry could not be saved to MySQL:', error instanceof Error ? error.message : 'Unknown error')
     return Response.json({ error: 'We could not confirm that your enquiry was saved. You can try again or continue on WhatsApp.' }, { status: 502 })
   }
   return Response.json({ saved: true })

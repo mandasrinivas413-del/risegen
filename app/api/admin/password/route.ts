@@ -1,5 +1,5 @@
+import type { RowDataPacket } from 'mysql2/promise'
 import {
-  getSql,
   createAdminSession,
   hashPassword,
   isSameOrigin,
@@ -10,6 +10,7 @@ import {
   verifyAdminSession,
   verifyPassword,
 } from '@/lib/admin-auth'
+import { getDb } from '@/lib/db'
 
 export const runtime = 'nodejs'
 
@@ -26,12 +27,12 @@ export async function POST(request: Request) {
   const session = await verifyAdminSession(readSessionCookie(request.headers.get('cookie')))
   if (!session) return Response.json({ error: 'Please log in again.' }, { status: 401 })
 
-  const rows = await getSql()`
+  const [rows] = await getDb().execute<RowDataPacket[]>(`
     SELECT password_salt, password_hash, session_version
     FROM admin_users
-    WHERE email = ${session.email}
+    WHERE email = ?
     LIMIT 1
-  `
+  `, [session.email])
   const admin = rows[0]
   if (!admin) return Response.json({ error: 'Admin account not found.' }, { status: 404 })
   if (!session.mustChangePassword) {
@@ -42,18 +43,19 @@ export async function POST(request: Request) {
   }
 
   const { salt, hash } = await hashPassword(body.newPassword)
-  await getSql()`
+  await getDb().execute(`
     UPDATE admin_users
-    SET password_salt = ${salt},
-        password_hash = ${hash},
+    SET password_salt = ?,
+        password_hash = ?,
         session_version = session_version + 1,
         must_change_password = FALSE,
         password_changed_at = NOW()
-    WHERE email = ${session.email}
-  `
-  const updatedAdminRows = await getSql()`
-    SELECT session_version FROM admin_users WHERE email = ${session.email} LIMIT 1
-  `
+    WHERE email = ?
+  `, [salt, hash, session.email])
+  const [updatedAdminRows] = await getDb().execute<RowDataPacket[]>(
+    'SELECT session_version FROM admin_users WHERE email = ? LIMIT 1',
+    [session.email],
+  )
   const response = Response.json({ saved: true })
   response.headers.append('Set-Cookie', sessionCookie(createAdminSession(session.email, Number(updatedAdminRows[0].session_version))))
   return response

@@ -1,27 +1,28 @@
 CREATE TABLE IF NOT EXISTS enquiries (
-  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   subject VARCHAR(250) NOT NULL,
   phone VARCHAR(10) NOT NULL,
   course TEXT NOT NULL,
-  mode TEXT NOT NULL CHECK (mode IN ('Online', 'Classroom')),
+  mode VARCHAR(20) NOT NULL,
   message TEXT NOT NULL DEFAULT '',
   path TEXT NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX enquiries_created_at_idx (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS admin_users (
-  email TEXT PRIMARY KEY,
-  password_salt TEXT NOT NULL,
-  password_hash TEXT NOT NULL,
-  session_version INTEGER NOT NULL DEFAULT 1,
+  email VARCHAR(254) NOT NULL PRIMARY KEY,
+  password_salt CHAR(32) NOT NULL,
+  password_hash CHAR(128) NOT NULL,
+  session_version INT UNSIGNED NOT NULL DEFAULT 1,
   must_change_password BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  password_changed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  password_changed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS admin_auth_attempts (
-  attempt_key TEXT PRIMARY KEY,
-  failures INTEGER NOT NULL DEFAULT 0,
-  locked_until TIMESTAMPTZ
-);
+  attempt_key CHAR(64) NOT NULL PRIMARY KEY,
+  failures INT UNSIGNED NOT NULL DEFAULT 0,
+  locked_until DATETIME NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
